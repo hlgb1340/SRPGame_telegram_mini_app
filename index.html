@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rock Paper Scissors</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        background-color: #f0f0f0;
+      }
+      button {
+        font-size: 24px;
+        margin: 10px;
+        padding: 10px 20px;
+      }
+      #result {
+        font-size: 18px;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Rock Paper Scissors</h1>
+    <div>
+      <button onclick="play('rock')">✊ Rock</button>
+      <button onclick="play('paper')">✋ Paper</button>
+      <button onclick="play('scissors')">✌️ Scissors</button>
+    </div>
+    <div id="result"></div>
+    <script>
+      let tg = window.Telegram.WebApp;
+      tg.expand();
+
+      function play(playerChoice) {
+        const choices = ["rock", "paper", "scissors"];
+        const computerChoice =
+          choices[Math.floor(Math.random() * choices.length)];
+        const result = getResult(playerChoice, computerChoice);
+        document.getElementById("result").innerHTML = `You chose ${getEmoji(
+          playerChoice
+        )}, computer chose ${getEmoji(computerChoice)}. ${result}`;
+
+        // Send result to bot
+        tg.sendData(
+          JSON.stringify({
+            playerChoice: playerChoice,
+            computerChoice: computerChoice,
+            result: result,
+          })
+        );
+      }
+
+      function getEmoji(choice) {
+        switch (choice) {
+          case "rock":
+            return "✊";
+          case "paper":
+            return "✋";
+          case "scissors":
+            return "✌️";
+        }
+      }
+
+      function getResult(player, computer) {
+        if (player === computer) return "It's a tie!";
+        if (
+          (player === "rock" && computer === "scissors") ||
+          (player === "paper" && computer === "rock") ||
+          (player === "scissors" && computer === "paper")
+        ) {
+          return "You win!";
+        }
+        return "Computer wins!";
+      }
+    </script>
+  </body>
+</html>
